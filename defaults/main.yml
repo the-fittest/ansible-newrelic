@@ -9,4 +9,4 @@ newrelic_additional_packages: []
 newrelic_config_files:
   - newrelic-infra.yml.j2
 
-newrelic_license_key: []
+newrelic_license_key: ""

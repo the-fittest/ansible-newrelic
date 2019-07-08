@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    newrelic_license_key: ftp3i0vrulz1eqtvexf4hmprytkpmusrd7k1d6ix
+  roles:
+    - role: ansible-newrelic

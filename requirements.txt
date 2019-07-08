@@ -1,0 +1,4 @@
+ansible
+# pin version because of a bug https://github.com/ansible/ansible/issues/35612
+docker<3.0.0
+molecule

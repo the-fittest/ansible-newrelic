@@ -1,0 +1,12 @@
+---
+# defaults file for ansible-newrelic
+
+newrelic_packages:
+  - newrelic-infra
+  
+newrelic_additional_packages: []
+
+newrelic_config_files:
+  - newrelic-infra.yml.j2
+
+newrelic_license_key: []

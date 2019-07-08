@@ -1,0 +1,35 @@
+---
+- hosts: all
+  gather_facts: true
+
+  vars:
+    goss:
+      user:
+        newrelic:
+          exists: true
+          groups:
+            - newrelic
+          home: /opt/newrelic
+          shell: /bin/false
+      group:
+        newrelic:
+          exists: true
+      package:
+        newrelic-sysmond:
+          installed: true
+      service:
+        newrelic-sysmond:
+          enabled: true
+          running: true
+
+  post_tasks:
+
+    - name: Copy tests to remote
+      copy:
+        content: "{{ goss | to_nice_yaml }}"
+        dest: "/tmp/goss.yml"
+
+    - name: test goss files
+      goss:
+        path: "/tmp/goss.yml"
+        format: documentation

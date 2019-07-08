@@ -1,0 +1,22 @@
+---
+version: 2
+jobs:
+  build:
+    docker:
+      - image: docker:stable
+    working_directory: ~/ansible-newrelic
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - checkout:
+          path: ~/ansible-newrelic
+      - run:
+          name: "Install pip"
+          command: "apk add --update python python-dev py-pip build-base
+                    openssl-dev libffi-dev linux-headers"
+      - run:
+          name: "Install python dependencies"
+          command: "pip install -r requirements.txt"
+      - run:
+          name: "run tests"
+          command: "molecule test"

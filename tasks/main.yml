@@ -1,0 +1,74 @@
+---
+# tasks file for ansible-newrelic
+
+- name: install dependencies
+  apt:
+    name: apt-transport-https
+    state: present
+
+- name: Add newrelic repository key
+  apt_key:
+    url: https://download.newrelic.com/infrastructure_agent/gpg/newrelic-infra.gpg
+    state: present
+  register: newrelic_apt_key
+  tags:
+    - setup
+    - newrelic
+
+- name: Update keyring
+  when: newrelic_apt_key.changed
+  command: "apt-key update"
+  tags:
+    - setup
+    - newrelic
+    - skip_ansible_lint
+
+- name: add repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.newrelic.com/infrastructure_agent/linux/apt bionic main
+    state: present
+    filename: newrelic-infra
+    update_cache: yes
+
+- name: Install newrelic requirements
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ newrelic_packages }}"
+    - "{{ newrelic_additional_packages }}"
+  tags:
+    - package
+    - newrelic
+
+- name: remove old package
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - newrelic-sysmond
+  tags:
+    - package
+    - newrelic
+
+- name: Configure newrelic
+  template:
+    src: "{{ item }}"
+    dest: "/etc/{{ item | basename | replace('.j2', '') }}"
+  notify:
+    - restart newrelic
+  with_items:
+    - "{{ newrelic_config_files }}"
+  tags:
+    - config
+    - newrelic
+
+- name: Start newrelic
+  service:
+    name: newrelic-infra
+    state: started
+    enabled: true
+  changed_when: false
+  tags:
+    - service
+    - newrelic

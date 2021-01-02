@@ -42,23 +42,11 @@
     - package
     - newrelic
 
-- name: remove old package
-  package:
-    name: "{{ item }}"
-    state: absent
-  with_items:
-    - newrelic-sysmond
-  tags:
-    - package
-    - newrelic
-
 - name: Configure newrelic
   template:
     src: "{{ item }}"
     dest: "/etc/{{ item | basename | replace('.j2', '') }}"
     mode: 0644
-  notify:
-    - restart newrelic
   with_items:
     - "{{ newrelic_config_files }}"
   tags:
@@ -68,10 +56,7 @@
 - name: Start newrelic
   service:
     name: newrelic-infra
-    state: started
     enabled: true
-  changed_when: false
-  when: newrelic_start_after_install
   tags:
     - service
     - newrelic

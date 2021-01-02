@@ -10,5 +10,3 @@ newrelic_config_files:
   - newrelic-infra.yml.j2
 
 newrelic_license_key: ""
-
-newrelic_start_after_install: true
